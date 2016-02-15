@@ -1,3 +1,4 @@
+from itertools import chain
 import multiprocessing
 import queue
 import os
@@ -503,6 +504,23 @@ def process_queues(processes,
                 break
 
     return retval
+
+
+def simplify_section_result(section_result):
+    section_yielded_result = section_result[0]
+    results_for_section = []
+    for value in chain(section_result[1].values(),
+                       section_result[2].values()):
+        if value is None:
+            continue
+
+        for result in value:
+            results_for_section.append(result)
+    section_yielded_unfixed_results = len(results_for_section) > 0
+
+    return (section_yielded_result,
+            section_yielded_unfixed_results,
+            results_for_section)
 
 
 def execute_section(section,
